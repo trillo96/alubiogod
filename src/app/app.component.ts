@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
   actualizarUsuarios(){
     //setinterval(funcion, cada minuto)
     //compruebo si es lunes 00:00 o jueves 00:00 cada minuto
-    //actualizo lista de usuarios la cual es un observer
+    //actualizo usuarios
   
     setInterval(() => {
   
