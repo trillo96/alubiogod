@@ -1,0 +1,10 @@
+<h2 align="center" mat-dialog-title>Favoritos</h2>
+<mat-dialog-content class="mat-typography">
+  <mat-list role="list">
+    <mat-list-item *ngFor="let user of users" role="listitem">{{user.first_name}}, {{user.last_name}}, {{user.gender}}, {{user.status}} <mat-divider></mat-divider></mat-list-item>
+   
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-button mat-dialog-close>Cerrar</button>  
+</mat-dialog-actions>

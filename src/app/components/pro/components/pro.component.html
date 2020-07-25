@@ -1,0 +1,64 @@
+<div>
+    <mat-card style="width: 300px;">    
+         <form [formGroup]="formGroup">
+           <mat-card-content>                   
+               
+                 <mat-form-field style="margin-left: 60px;">
+                   <input (keyup)="onKeyUp()" matInput type="text" placeholder="Nombre" formControlName="nombre">
+                   <mat-error *ngIf="formGroup.get('nombre').hasError('required')">
+                     El nombre es requerido
+                   </mat-error>
+                   <mat-error *ngIf="formGroup.get('nombre').hasError('minlength')">
+                     Debe de introducir mas de 2 letras
+                   </mat-error>
+                 </mat-form-field> 
+           </mat-card-content>
+         </form>
+       
+     </mat-card>
+    </div>
+    <div *ngIf="isSelected" >
+      <mat-card class="selection-item">
+          <mat-list>      
+              <mat-list-item role="listitem">{{usuarioSeleccionado.first_name}}</mat-list-item>
+              <mat-list-item role="listitem">{{usuarioSeleccionado.last_name}}</mat-list-item>
+              <mat-list-item role="listitem">{{usuarioSeleccionado.gender}}</mat-list-item>
+              <mat-list-item role="listitem">{{fechaNac}}</mat-list-item>
+              <mat-list-item role="listitem">{{usuarioSeleccionado.email}}</mat-list-item>
+              <mat-list-item role="listitem">{{usuarioSeleccionado.phone}}</mat-list-item>
+              <mat-list-item style="margin-top: 10px;" role="listitem">{{usuarioSeleccionado.website}}</mat-list-item>
+              <mat-list-item style="margin-top: 10px;" role="listitem">{{usuarioSeleccionado.address}}</mat-list-item>
+              <mat-list-item role="listitem">{{usuarioSeleccionado.status}}</mat-list-item>
+          </mat-list>
+             <mat-card-actions >
+                 <button *ngIf="!usuarioSeleccionado.isFavorito" style="margin-left: 15px;" (click)="addFavorito(usuarioSeleccionado)" mat-icon-button>
+                      <span *ngIf="!usuarioSeleccionado.isFavorito" class="material-icons">
+                      favorite_border
+                      </span>
+              </button>
+              <button *ngIf="usuarioSeleccionado.isFavorito" style="margin-left: 15px;"  mat-icon-button>
+                  <span  class="material-icons">
+                  favorite
+                  </span>                
+              </button>
+             </mat-card-actions>
+      </mat-card>
+    </div>  
+    <div class="galeria-item">
+      <app-galeria></app-galeria>
+    </div>
+    <div infiniteScroll [infiniteScrollDistance]="2"  (scrolled)="onScroll()" class="lista" >
+       <mat-card>
+         <span *ngIf="users.length==0">No se ha encontrado ningun resultado.</span>    
+          <mat-list>      
+              <mat-action-list>
+                  <button *ngFor="let user of users; index as i" mat-list-item (click)="verDueno(user)"> {{user.first_name}}, {{user.last_name}}, {{user.gender}}, {{user.status}} <mat-divider></mat-divider> </button>
+              </mat-action-list>
+          </mat-list>        
+      </mat-card>
+    </div>
+    
+    
+     
+    
+    

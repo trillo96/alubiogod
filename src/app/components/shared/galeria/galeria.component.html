@@ -1,0 +1,7 @@
+<mat-grid-list cols=2  style="margin-top: 30px;">    
+    <mat-grid-tile *ngFor="let photo of photos$">        
+              <mat-card style="width: max-content">
+                <img style="width: 200px;height: 200px;" src="{{photo}}"> 
+            </mat-card>                    
+    </mat-grid-tile>
+  </mat-grid-list>
