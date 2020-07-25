@@ -25,6 +25,8 @@ export class DuenosComponent implements OnInit {
   usuarioSeleccionado:User;
   isSelected:boolean=false;
   fechaNac:string;
+  cargado:boolean=false;
+  usersTemplate:User[]=[];
 
   constructor(public toolbarService:ToolbarService, public userService:UserService, 
   public favoritosService:FavoritosService, public galeriaService:GaleriaService) {
@@ -35,21 +37,27 @@ export class DuenosComponent implements OnInit {
 
   ngOnInit(): void {
     this.toolbarService.titulo$.emit('OWNERS');    
-    this.userService.getUsuarios(this.page).then(usuarios => {     
-      this.users=usuarios;              
-  });
+    this.users=this.userService.users;
+    this.usersTemplate=this.users.slice(0,20);
+
+    this.cargado=false;
+    this.userService.update$.subscribe (usuarios => {
+      this.users=usuarios;
+      console.log(this.users);
+      if(!this.cargado){
+      this.usersTemplate=this.users.slice(0,20);
+      this.cargado=true;
+    }
+    }); 
     
 
   }
 
   verDueno(user:User){
-    this.userService.getUsuario(user.id).then( usuario =>{      
-      this.usuarioSeleccionado=usuario;
-      this.isSelected=true;
-      this.calcularEdad();      
-      this.galeriaService.photos$.emit(this.usuarioSeleccionado.fotos);       
-    });
-    
+    this.usuarioSeleccionado=this.userService.getUsuario(this.users,user.id);
+    this.isSelected=true;
+    this.calcularEdad();
+    this.galeriaService.photos$.emit(this.usuarioSeleccionado.fotos);    
   }
 
   
@@ -70,22 +78,24 @@ export class DuenosComponent implements OnInit {
     this.fechaNac = "Nació hace "+ano+" años y "+dias+" días";
   }
 
-  add20users() {    
-    this.userService.getUsuarios(this.page).then(data => {
-      data.forEach( user =>{
-        this.users.push(user);
-      } )          
-    })
+  add20users() {       
+    this.usersTemplate=this.usersTemplate.concat(this.users.slice(20*this.page,20*(this.page+1)));
+    
   }
   
   onScroll() {
-    if (this.page < this.userService.pagesDisp) {
-      this.page ++;
-      this.add20users();
+    
+    console.log('SCROLLLL');
+    if (this.usersTemplate.length < this.users.length) {
+      setTimeout(()=>{
+        this.add20users();
+        this.page ++;
+        
+      },2000);     
       
     } else {
       console.log('No more lines. Finish page!');
-    }
+    }}
   }
 
-}
+

@@ -49,20 +49,20 @@
 </div>
 <div *ngIf="formGroup.valid" infiniteScroll [infiniteScrollDistance]="2"  (scrolled)="onScroll()" class="lista" >
    <mat-card>
-     <span *ngIf="users.length==0">No se ha encontrado ningun resultado.</span>    
+     <span *ngIf="usersTemplate.length==0">No se ha encontrado ningún resultado.</span>    
       <mat-list>      
           <mat-action-list>
-              <button *ngFor="let user of users; index as i" mat-list-item (click)="verDueno(user)"> {{user.first_name}}, {{user.last_name}}, {{user.gender}}, {{user.status}} <mat-divider></mat-divider> </button>
+              <button *ngFor="let user of usersTemplate; index as i" mat-list-item (click)="verDueno(user)"> {{user.first_name}}, {{user.last_name}}, {{user.gender}}, {{user.status}} <mat-divider></mat-divider> </button>
           </mat-action-list>
       </mat-list>        
   </mat-card>
 </div>
 <div *ngIf="formGroup.invalid" class="lista" >
   <mat-card>
-    <span *ngIf="users.length==0">No se ha encontrado ningun resultado.</span>    
+    <span *ngIf="usersTemplate.length==0">No se ha encontrado ningún resultado.</span>    
      <mat-list>      
          <mat-action-list>
-             <button *ngFor="let user of users; index as i" mat-list-item (click)="verDueno(user)"> {{user.first_name}}, {{user.last_name}}, {{user.gender}}, {{user.status}} <mat-divider></mat-divider> </button>
+             <button *ngFor="let user of usersTemplate; index as i" mat-list-item (click)="verDueno(user)"> {{user.first_name}}, {{user.last_name}}, {{user.gender}}, {{user.status}} <mat-divider></mat-divider> </button>
          </mat-action-list>
      </mat-list>        
  </mat-card>

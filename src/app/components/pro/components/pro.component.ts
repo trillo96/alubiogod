@@ -18,18 +18,20 @@ export class ProComponent implements OnInit {
   subject: Subject<any> = new Subject();
   nombreFiltro:string="";
   formGroup: FormGroup;
-  users:User[]=[];    
+  users:User[]=[];
+  usersTemplate:User[]=[];
+  usersNombre:User[]=[];       
   page:number=1;
   usuarioSeleccionado:User;
   isSelected:boolean=false;
   fechaNac:string;
+  cargado:boolean=false;
 
 
   constructor(public toolbarService:ToolbarService, public userService:UserService, public favoritosService:FavoritosService,
-    public galeriaService:GaleriaService) {
-    this.userService.getUsuarios(this.page).then(usuarios => {     
-        this.users=usuarios;              
-    });
+    public galeriaService:GaleriaService) {    
+      
+              
    }
 
   ngOnInit(): void {
@@ -37,46 +39,46 @@ export class ProComponent implements OnInit {
     this.formGroup = new FormGroup({      
       nombre: new FormControl('', [Validators.required, Validators.minLength(2)])
     });
+    this.users=this.userService.users;
+    this.usersTemplate=this.users.slice(0,20);
 
+    this.cargado=false;
+    this.userService.update$.subscribe (usuarios => {
+      this.users=usuarios;
+      console.log(this.users);
+      if(!this.cargado){
+      this.usersTemplate=this.users.slice(0,20);
+      this.cargado=true;
+    }
+    });
+    
+
+    
+
+     
     this.subject
       .pipe(debounceTime(1000))
       .subscribe(() => {
         if(this.formGroup.valid){
         this.nombreFiltro=this.formGroup.controls.nombre.value;
-        this.userService.getUsuariosPorNombre(this.nombreFiltro, 1).then( usuarios =>{
-          this.users=usuarios;        
-        } );
-      }
+        this.usersNombre=this.userService.getUsuariosPorNombre(this.users,this.nombreFiltro);
+        this.usersTemplate=this.usersNombre.slice(0,20);
+      }   
       else{        
-        this.userService.getUsuarios(1).then(usuarios => {     
-          this.users=usuarios;              
-      });
+        this.usersTemplate=this.users.slice(0,20);
       }
-    }
-    );
-    
+           
+    }     
+    );    
   }
   
   verDueno(user:User){
-    this.userService.getUsuario(user.id).then( usuario =>{      
-      this.usuarioSeleccionado=usuario;
-      this.isSelected=true;
-      this.calcularEdad();
-      this.galeriaService.photos$.emit(this.usuarioSeleccionado.fotos);  
-    })
-    
+    this.usuarioSeleccionado=this.userService.getUsuario(this.users,user.id);
+    this.isSelected=true;
+    this.calcularEdad();
+    this.galeriaService.photos$.emit(this.usuarioSeleccionado.fotos);    
   }
-
-  verMas(){
-    if(this.page<this.userService.pagesDisp){
-    this.page++;    
-    this.userService.getUsuariosPorNombre(this.nombreFiltro,this.page).then(data => {
-      data.forEach( user =>{
-        this.users.push(user);
-      } )          
-    })   
-  }
-  }
+ 
  
   addFavorito(user:User){
     user.isFavorito=true;
@@ -95,22 +97,42 @@ export class ProComponent implements OnInit {
     this.fechaNac = "Nació hace "+ano+" años y "+dias+" días";
   }
 
-  add20users() {    
-    this.userService.getUsuariosPorNombre(this.nombreFiltro,this.page).then(data => {
-      data.forEach( user =>{
-        this.users.push(user);
-      } )          
-    }) 
+  add20users() {   
+    if(this.formGroup.valid){
+      this.usersTemplate=this.usersTemplate.concat(this.usersNombre.slice(20*this.page, 20*(this.page+1)));
+      
+      
+    }  
+    else{
+      this.usersTemplate=this.usersTemplate.concat(this.users.slice(20*this.page, 20*(this.page+1)));
+    }  
+    
   }
   
   onScroll() {
-    if (this.page < this.userService.pagesDisp) {
-      this.page ++;
-      this.add20users();
+    if(this.formGroup.valid){
+      if (this.usersTemplate.length < this.usersNombre.length) {
+        setTimeout(()=>{
+          this.add20users();
+          this.page ++;
+          
+        },2000);     
+        
+      }else{
+        console.log('No more lines. Finish page!');
+      }
+    }else{
+    console.log('SCROLLLL');
+    if (this.usersTemplate.length < this.users.length) {
+      setTimeout(()=>{
+        this.add20users();
+        this.page ++;
+        
+      },2000);     
       
     } else {
       console.log('No more lines. Finish page!');
-    }
+    }}
   }
 
   onKeyUp(): void {

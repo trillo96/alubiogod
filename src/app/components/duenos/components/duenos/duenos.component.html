@@ -32,7 +32,7 @@
      <mat-card>    
         <mat-list>      
             <mat-action-list>
-                <button *ngFor="let user of users; index as i" mat-list-item (click)="verDueno(user)"> {{user.first_name}}, {{user.last_name}}, {{user.gender}}, {{user.status}} <mat-divider></mat-divider> </button>
+                <button *ngFor="let user of usersTemplate; index as i" mat-list-item (click)="verDueno(user)"> {{user.first_name}}, {{user.last_name}}, {{user.gender}}, {{user.status}} <mat-divider></mat-divider> </button>
             </mat-action-list>
         </mat-list>           
     </mat-card>

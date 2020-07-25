@@ -12,11 +12,38 @@ import { UserService } from './services/user.service';
 export class AppComponent implements OnInit {
   
   constructor(public userService:UserService) {
-    
+    this.userService.cargarUsuarios().then(data=>{
+      console.log(data);
+    });
+
+    this.actualizarUsuarios();
   }
 
   
 
   ngOnInit() {
   }   
+
+  actualizarUsuarios(){
+    //setinterval(funcion, cada minuto)
+    //compruebo si es lunes 00:00 o jueves 00:00 cada minuto
+    //actualizo lista de usuarios la cual es un observer
+  
+    setInterval(() => {
+  
+    let fechaHora = new Date();
+    let dia = fechaHora.getDay(); 
+    let horas = fechaHora.getHours();
+    let minutos = fechaHora.getMinutes();  
+  
+    if((dia==1 || dia ==4) && horas == 0 && minutos ==0){
+      this.userService.cargarUsuarios().then(data =>{
+        console.log("Se han actualizado los datos");
+      })
+    }
+  
+      }, 60000);
+  
+  
+  }
 }
